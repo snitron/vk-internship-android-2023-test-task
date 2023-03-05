@@ -1,5 +1,6 @@
 package com.snitron.vkinternship
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -24,7 +25,7 @@ import com.snitron.vkinternship.clock.ClockView.Companion.DEFAULT_SECOND_HAND_RA
 import com.snitron.vkinternship.clock.ClockView.Companion.DEFAULT_SECOND_HAND_WIDTH
 
 class MainActivity : AppCompatActivity() {
-    private val clocks = arrayListOf<ClockInitData>()
+    private lateinit var clocks: ArrayList<ClockInitData>
     private lateinit var adapter: ClockAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,28 +33,40 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val viewPager2 = findViewById<ViewPager2>(R.id.viewPager2)
-        clocks.add(
-            ClockInitData(
-                DEFAULT_SECOND_HAND_WIDTH,
-                DEFAULT_MINUTE_HAND_WIDTH,
-                DEFAULT_HOUR_HAND_WIDTH,
-                DEFAULT_SECOND_HAND_RADIUS,
-                DEFAULT_MINUTE_HAND_RADIUS,
-                DEFAULT_HOUR_HAND_RADIUS,
-                DEFAULT_SECOND_HAND_COLOR,
-                DEFAULT_MINUTE_HAND_COLOR,
-                DEFAULT_HOUR_HAND_COLOR,
-                DEFAULT_BACKGROUND_COLOR,
-                DEFAULT_BORDER_COLOR,
-                DEFAULT_BORDER_WIDTH,
-                DEFAULT_DIVISION_COUNT,
-                DEFAULT_DIVISION_COLOR,
-                DEFAULT_DIVISION_RADIUS,
-                DEFAULT_DIVISION_TEXT_COLOR,
-                DEFAULT_DIVISION_TEXT_SIZE,
-                DEFAULT_REDRAW_INTERVAL
+
+        @Suppress("UNCHECKED_CAST")
+        clocks = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            (savedInstanceState?.getSerializable("clocks", ArrayList::class.java)
+                    as? ArrayList<ClockInitData>) ?: arrayListOf()
+        } else {
+            (savedInstanceState?.getSerializable("clocks")
+                    as? ArrayList<ClockInitData>) ?: arrayListOf()
+        }
+
+        if (clocks.isEmpty()) {
+            clocks.add(
+                ClockInitData(
+                    DEFAULT_SECOND_HAND_WIDTH,
+                    DEFAULT_MINUTE_HAND_WIDTH,
+                    DEFAULT_HOUR_HAND_WIDTH,
+                    DEFAULT_SECOND_HAND_RADIUS,
+                    DEFAULT_MINUTE_HAND_RADIUS,
+                    DEFAULT_HOUR_HAND_RADIUS,
+                    DEFAULT_SECOND_HAND_COLOR,
+                    DEFAULT_MINUTE_HAND_COLOR,
+                    DEFAULT_HOUR_HAND_COLOR,
+                    DEFAULT_BACKGROUND_COLOR,
+                    DEFAULT_BORDER_COLOR,
+                    DEFAULT_BORDER_WIDTH,
+                    DEFAULT_DIVISION_COUNT,
+                    DEFAULT_DIVISION_COLOR,
+                    DEFAULT_DIVISION_RADIUS,
+                    DEFAULT_DIVISION_TEXT_COLOR,
+                    DEFAULT_DIVISION_TEXT_SIZE,
+                    DEFAULT_REDRAW_INTERVAL
+                )
             )
-        )
+        }
 
         adapter = ClockAdapter(clocks)
         viewPager2.adapter = adapter
@@ -72,5 +85,10 @@ class MainActivity : AppCompatActivity() {
                 adapter.remove(viewPager2.currentItem)
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putSerializable("clocks", clocks)
+        super.onSaveInstanceState(outState)
     }
 }
