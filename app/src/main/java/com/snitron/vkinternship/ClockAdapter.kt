@@ -92,4 +92,4 @@ data class ClockInitData(
     val divisionTextColor: Int = random.randomColor(),
     val divisionTextSize: Float = (random.nextFloat() + 0.1f) * 50f + 10f,
     val redrawInterval: Int = random.nextInt(0, 2000)
-)
+): java.io.Serializable
