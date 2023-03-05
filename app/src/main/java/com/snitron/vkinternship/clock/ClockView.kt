@@ -164,6 +164,7 @@ class ClockView @JvmOverloads constructor(
 
     var redrawInterval = DEFAULT_REDRAW_INTERVAL
 
+    //Can be overriden to support different calendars
     var calendarInstanceGetter: () -> Calendar = { GregorianCalendar.getInstance() }
 
     private val paint = Paint()
