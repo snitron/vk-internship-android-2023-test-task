@@ -1,15 +1,9 @@
 package com.snitron.vkinternship
 
-import android.content.Intent
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import android.widget.TextView
-import androidx.core.view.isEmpty
-import androidx.core.view.size
 import androidx.viewpager2.widget.ViewPager2
-import com.snitron.vkinternship.clock.ClockView
 import com.snitron.vkinternship.clock.ClockView.Companion.DEFAULT_BACKGROUND_COLOR
 import com.snitron.vkinternship.clock.ClockView.Companion.DEFAULT_BORDER_COLOR
 import com.snitron.vkinternship.clock.ClockView.Companion.DEFAULT_BORDER_WIDTH
@@ -28,7 +22,6 @@ import com.snitron.vkinternship.clock.ClockView.Companion.DEFAULT_REDRAW_INTERVA
 import com.snitron.vkinternship.clock.ClockView.Companion.DEFAULT_SECOND_HAND_COLOR
 import com.snitron.vkinternship.clock.ClockView.Companion.DEFAULT_SECOND_HAND_RADIUS
 import com.snitron.vkinternship.clock.ClockView.Companion.DEFAULT_SECOND_HAND_WIDTH
-import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
     private val clocks = arrayListOf<ClockInitData>()
