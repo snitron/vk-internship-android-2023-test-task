@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ClockView">
+        <attr name="second_hand_width" format="dimension"/>
+        <attr name="minute_hand_width" format="dimension"/>
+        <attr name="hour_hand_width" format="dimension"/>
+        <attr name="second_hand_radius" format="float"/>
+        <attr name="minute_hand_radius" format="float"/>
+        <attr name="hour_hand_radius" format="float"/>
+        <attr name="second_hand_color" format="color"/>
+        <attr name="minute_hand_color" format="color"/>
+        <attr name="hour_hand_color" format="color"/>
+
+        <attr name="cv_background_color" format="color"/>
+        <attr name="cv_border_color" format="color"/>
+        <attr name="cv_border_width" format="dimension"/>
+
+        <attr name="division_count" format="integer"/>
+        <attr name="division_color" format="color"/>
+        <attr name="division_radius" format="dimension"/>
+        <attr name="division_text_color" format="color"/>
+        <attr name="division_text_size" format="dimension"/>
+
+        <attr name="redraw_interval" format="integer"/>
+    </declare-styleable>
+</resources>
