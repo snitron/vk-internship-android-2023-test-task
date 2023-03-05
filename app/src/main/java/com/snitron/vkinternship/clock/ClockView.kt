@@ -1,13 +1,15 @@
 package com.snitron.vkinternship.clock
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import com.snitron.vkinternship.R
 import kotlinx.coroutines.*
-import java.util.Calendar
-import java.util.GregorianCalendar
+import java.util.*
 import kotlin.math.*
 
 class ClockView @JvmOverloads constructor(
@@ -58,7 +60,18 @@ class ClockView @JvmOverloads constructor(
             }
         }
 
-        fun drawHand(canvas: Canvas?, paint: Paint, width: Float, cx: Float, cy: Float, radius: Float, handRadius: Float, color: Int, unit: Int, maximum: Int) {
+        fun drawHand(
+            canvas: Canvas?,
+            paint: Paint,
+            width: Float,
+            cx: Float,
+            cy: Float,
+            radius: Float,
+            handRadius: Float,
+            color: Int,
+            unit: Int,
+            maximum: Int
+        ) {
             val angle = unit.toDouble() / maximum * 2.0 * PI - PI / 2
             paint.color = color
             paint.strokeWidth = width
@@ -80,19 +93,19 @@ class ClockView @JvmOverloads constructor(
             }
         }
 
-        suspend fun <E: View> redrawScheduled(view: E, interval: Int = DEFAULT_REDRAW_INTERVAL) {
+        suspend fun <E : View> redrawScheduled(view: E, interval: Int = DEFAULT_REDRAW_INTERVAL) {
             while (true) {
                 view.invalidate()
                 delay(interval.toLong())
             }
         }
     }
-    
+
     var secondHandWidth = DEFAULT_SECOND_HAND_WIDTH
-    set(value) {
-        assertNonNegative(value)
-        field = value
-    }
+        set(value) {
+            assertNonNegative(value)
+            field = value
+        }
     var minuteHandWidth = DEFAULT_MINUTE_HAND_WIDTH
         set(value) {
             assertNonNegative(value)
@@ -161,29 +174,61 @@ class ClockView @JvmOverloads constructor(
     private fun extractAttributes(attrs: AttributeSet?) {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ClockView, 0, 0)
 
-        secondHandWidth = typedArray.getDimension(R.styleable.ClockView_second_hand_width, DEFAULT_SECOND_HAND_WIDTH)
-        minuteHandWidth = typedArray.getDimension(R.styleable.ClockView_minute_hand_width, DEFAULT_MINUTE_HAND_WIDTH)
-        hourHandWidth = typedArray.getDimension(R.styleable.ClockView_hour_hand_width, DEFAULT_HOUR_HAND_WIDTH)
+        secondHandWidth = typedArray.getDimension(
+            R.styleable.ClockView_second_hand_width,
+            DEFAULT_SECOND_HAND_WIDTH
+        )
+        minuteHandWidth = typedArray.getDimension(
+            R.styleable.ClockView_minute_hand_width,
+            DEFAULT_MINUTE_HAND_WIDTH
+        )
+        hourHandWidth =
+            typedArray.getDimension(R.styleable.ClockView_hour_hand_width, DEFAULT_HOUR_HAND_WIDTH)
 
-        secondHandRadius = typedArray.getDimension(R.styleable.ClockView_second_hand_radius, DEFAULT_SECOND_HAND_RADIUS)
-        minuteHandRadius = typedArray.getDimension(R.styleable.ClockView_minute_hand_radius, DEFAULT_MINUTE_HAND_RADIUS)
-        hourHandRadius = typedArray.getDimension(R.styleable.ClockView_hour_hand_radius, DEFAULT_HOUR_HAND_RADIUS)
+        secondHandRadius = typedArray.getDimension(
+            R.styleable.ClockView_second_hand_radius,
+            DEFAULT_SECOND_HAND_RADIUS
+        )
+        minuteHandRadius = typedArray.getDimension(
+            R.styleable.ClockView_minute_hand_radius,
+            DEFAULT_MINUTE_HAND_RADIUS
+        )
+        hourHandRadius = typedArray.getDimension(
+            R.styleable.ClockView_hour_hand_radius,
+            DEFAULT_HOUR_HAND_RADIUS
+        )
 
-        secondHandColor = typedArray.getColor(R.styleable.ClockView_second_hand_color, DEFAULT_SECOND_HAND_COLOR)
-        minuteHandColor = typedArray.getColor(R.styleable.ClockView_minute_hand_color, DEFAULT_MINUTE_HAND_COLOR)
-        hourHandColor = typedArray.getColor(R.styleable.ClockView_hour_hand_color, DEFAULT_HOUR_HAND_COLOR)
+        secondHandColor =
+            typedArray.getColor(R.styleable.ClockView_second_hand_color, DEFAULT_SECOND_HAND_COLOR)
+        minuteHandColor =
+            typedArray.getColor(R.styleable.ClockView_minute_hand_color, DEFAULT_MINUTE_HAND_COLOR)
+        hourHandColor =
+            typedArray.getColor(R.styleable.ClockView_hour_hand_color, DEFAULT_HOUR_HAND_COLOR)
 
-        cvBackgroundColor = typedArray.getColor(R.styleable.ClockView_cv_background_color, DEFAULT_BACKGROUND_COLOR)
-        borderColor = typedArray.getColor(R.styleable.ClockView_cv_border_color, DEFAULT_BORDER_COLOR)
-        borderWidth = typedArray.getDimension(R.styleable.ClockView_cv_border_width, DEFAULT_BORDER_WIDTH)
+        cvBackgroundColor =
+            typedArray.getColor(R.styleable.ClockView_cv_background_color, DEFAULT_BACKGROUND_COLOR)
+        borderColor =
+            typedArray.getColor(R.styleable.ClockView_cv_border_color, DEFAULT_BORDER_COLOR)
+        borderWidth =
+            typedArray.getDimension(R.styleable.ClockView_cv_border_width, DEFAULT_BORDER_WIDTH)
 
-        divisionCount = typedArray.getInteger(R.styleable.ClockView_division_count, DEFAULT_DIVISION_COUNT)
-        divisionColor = typedArray.getColor(R.styleable.ClockView_division_color, DEFAULT_DIVISION_COLOR)
-        divisionRadius = typedArray.getDimension(R.styleable.ClockView_division_radius, DEFAULT_DIVISION_RADIUS)
-        divisionTextColor = typedArray.getColor(R.styleable.ClockView_division_text_color, DEFAULT_DIVISION_TEXT_COLOR)
-        divisionTextSize = typedArray.getDimension(R.styleable.ClockView_division_text_size, DEFAULT_DIVISION_TEXT_SIZE)
+        divisionCount =
+            typedArray.getInteger(R.styleable.ClockView_division_count, DEFAULT_DIVISION_COUNT)
+        divisionColor =
+            typedArray.getColor(R.styleable.ClockView_division_color, DEFAULT_DIVISION_COLOR)
+        divisionRadius =
+            typedArray.getDimension(R.styleable.ClockView_division_radius, DEFAULT_DIVISION_RADIUS)
+        divisionTextColor = typedArray.getColor(
+            R.styleable.ClockView_division_text_color,
+            DEFAULT_DIVISION_TEXT_COLOR
+        )
+        divisionTextSize = typedArray.getDimension(
+            R.styleable.ClockView_division_text_size,
+            DEFAULT_DIVISION_TEXT_SIZE
+        )
 
-        redrawInterval = typedArray.getInteger(R.styleable.ClockView_redraw_interval, DEFAULT_REDRAW_INTERVAL)
+        redrawInterval =
+            typedArray.getInteger(R.styleable.ClockView_redraw_interval, DEFAULT_REDRAW_INTERVAL)
 
         typedArray.recycle()
     }
@@ -214,7 +259,12 @@ class ClockView @JvmOverloads constructor(
 
         paint.color = divisionColor
         iterateOverCircle((2 * PI / divisionCount).toFloat()) { _, alpha ->
-            canvas?.drawCircle(0.93f * workRadius * cos(alpha) + cx, 0.93f * workRadius * sin(alpha) + cy, divisionRadius, paint)
+            canvas?.drawCircle(
+                0.93f * workRadius * cos(alpha) + cx,
+                0.93f * workRadius * sin(alpha) + cy,
+                divisionRadius,
+                paint
+            )
         }
 
         paint.color = divisionTextColor
@@ -223,8 +273,14 @@ class ClockView @JvmOverloads constructor(
         paint.textAlign = Paint.Align.CENTER
 
         iterateOverCircle((2 * PI / 12).toFloat()) { i, alpha ->
-            if (abs(alpha - 2 * PI) < 1e-5) { return@iterateOverCircle }
-            val num = if (i < 10) { i + 3 } else { i - 9 }
+            if (abs(alpha - 2 * PI) < 1e-5) {
+                return@iterateOverCircle
+            }
+            val num = if (i < 10) {
+                i + 3
+            } else {
+                i - 9
+            }
 
             val numString = num.toString()
             paint.getTextBounds(numString, 0, numString.length, textBounds)
