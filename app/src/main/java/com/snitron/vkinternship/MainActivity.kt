@@ -1,8 +1,10 @@
 package com.snitron.vkinternship
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.widget.Button
 import androidx.viewpager2.widget.ViewPager2
 import com.snitron.vkinternship.clock.ClockView.Companion.DEFAULT_BACKGROUND_COLOR
@@ -27,18 +29,20 @@ import com.snitron.vkinternship.clock.ClockView.Companion.DEFAULT_SECOND_HAND_WI
 class MainActivity : AppCompatActivity() {
     private lateinit var clocks: ArrayList<ClockInitData>
     private lateinit var adapter: ClockAdapter
+    private lateinit var viewPager2: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val viewPager2 = findViewById<ViewPager2>(R.id.viewPager2)
+        viewPager2 = findViewById(R.id.viewPager2)
 
         @Suppress("UNCHECKED_CAST")
         clocks = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             (savedInstanceState?.getSerializable("clocks", ArrayList::class.java)
                     as? ArrayList<ClockInitData>) ?: arrayListOf()
         } else {
+            @Suppress("DEPRECATION")
             (savedInstanceState?.getSerializable("clocks")
                     as? ArrayList<ClockInitData>) ?: arrayListOf()
         }
@@ -90,5 +94,28 @@ class MainActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putSerializable("clocks", clocks)
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(
+        savedInstanceState: Bundle?,
+        persistentState: PersistableBundle?
+    ) {
+        super.onRestoreInstanceState(savedInstanceState, persistentState)
+        @Suppress("UNCHECKED_CAST")
+        clocks = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            (savedInstanceState?.getSerializable("clocks", ArrayList::class.java)
+                    as? ArrayList<ClockInitData>) ?: arrayListOf()
+        } else {
+            @Suppress("DEPRECATION")
+            (savedInstanceState?.getSerializable("clocks")
+                    as? ArrayList<ClockInitData>) ?: arrayListOf()
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onStart() {
+        super.onStart()
+
+        adapter.notifyDataSetChanged()
     }
 }
